@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -102,12 +103,13 @@ public class CustomFile
      */
     public Location getLocation(String path)
     {
-        double x = this.getConfig().getConfigurationSection(path).getDouble("x");
-        double y = this.getConfig().getConfigurationSection(path).getDouble("y");
-        double z = this.getConfig().getConfigurationSection(path).getDouble("z");
-        float pit = (float) this.getConfig().getConfigurationSection(path).getDouble("pit");
-        float yaw = (float) this.getConfig().getConfigurationSection(path).getDouble("yaw");
-        World world = Bukkit.getWorld(this.getConfig().getConfigurationSection(path).getString("world"));
+        ConfigurationSection section = this.getConfig().getConfigurationSection(path);
+        double x = section.getDouble("x");
+        double y = section.getDouble("y");
+        double z = section.getDouble("z");
+        float pit = (float) section.getDouble("pit");
+        float yaw = (float) section.getDouble("yaw");
+        World world = Bukkit.getWorld(section.getString("world"));
 
         return new Location(world, x, y, z, yaw, pit);
     }
@@ -135,7 +137,6 @@ public class CustomFile
      * @param path - path to the itemstack array
      * @return ItemStack[]
      */
-    @SuppressWarnings("unchecked")
     public ItemStack[] getItems(String path)
     {
         ArrayList<ItemStack> list = new ArrayList<ItemStack>();
