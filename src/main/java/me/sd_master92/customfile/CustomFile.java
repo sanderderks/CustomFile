@@ -1,9 +1,6 @@
 package me.sd_master92.customfile;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Map;
-
+import com.google.gson.Gson;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,45 +11,38 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 public class CustomFile
 {
-    private FileConfiguration config = new YamlConfiguration();
+    private final FileConfiguration config = new YamlConfiguration();
     private File loc = null;
 
     /**
      * Create a new CustomFile instance
      *
-     * @param folder - folder you want to save your file in
      * @param name   - name of the file
      * @param plugin - main plugin class
      */
-    public CustomFile(File folder, String name, Plugin plugin)
+    public CustomFile(String name, Plugin plugin)
     {
+        File folder = plugin.getDataFolder();
         try
         {
-            if (!folder.exists()) // if the specified folder does not yet exist, create it
+            if (!folder.exists() && !folder.mkdirs())
             {
-                folder.mkdirs();
+                throw new Exception("Could not generate folder");
             }
 
             loc = new File(folder, name);
 
-            if (!loc.exists()) // if the specified file does not yet exist, check if the plugin provides a
-            // default configuration for this file (and load it to 'config') and else create
-            // a new file
+            if (!loc.exists() && !loc.createNewFile())
             {
-                if (plugin.getResource(name) == null)
-                {
-                    loc.createNewFile();
-                } else
-                {
-                    plugin.saveResource(name, false);
-                    config.load(loc);
-                }
-            } else // if the specified file does exist, load its configuration to 'config'
-            {
-                config.load(loc);
+                plugin.saveResource(name, false);
             }
+            config.load(loc);
         } catch (Exception e)
         {
             e.printStackTrace();
@@ -96,22 +86,29 @@ public class CustomFile
     }
 
     /**
-     * Retreive a location from this CustomFile
+     * Retrieve a location from this CustomFile
      *
      * @param path - path to the location
-     * @return Location
+     * @return Location or null
      */
     public Location getLocation(String path)
     {
         ConfigurationSection section = this.getConfig().getConfigurationSection(path);
-        double x = section.getDouble("x");
-        double y = section.getDouble("y");
-        double z = section.getDouble("z");
-        float pit = (float) section.getDouble("pit");
-        float yaw = (float) section.getDouble("yaw");
-        World world = Bukkit.getWorld(section.getString("world"));
-
-        return new Location(world, x, y, z, yaw, pit);
+        if (section != null)
+        {
+            double x = section.getDouble("x");
+            double y = section.getDouble("y");
+            double z = section.getDouble("z");
+            float pit = (float) section.getDouble("pit");
+            float yaw = (float) section.getDouble("yaw");
+            String w = section.getString("world");
+            if (w != null)
+            {
+                World world = Bukkit.getWorld(w);
+                return new Location(world, x, y, z, yaw, pit);
+            }
+        }
+        return null;
     }
 
     /**
@@ -127,25 +124,32 @@ public class CustomFile
         this.getConfig().set(path + ".z", loc.getZ());
         this.getConfig().set(path + ".pit", loc.getPitch());
         this.getConfig().set(path + ".yaw", loc.getYaw());
-        this.getConfig().set(path + ".world", loc.getWorld().getName());
+        World w = loc.getWorld();
+        if (w != null)
+        {
+            this.getConfig().set(path + ".world", loc.getWorld().getName());
+        } else
+        {
+            this.getConfig().set(path + ".world", "world");
+        }
         this.saveConfig();
     }
 
     /**
-     * Retreive an itemstack array from this CustomFile
+     * Retrieve an itemstack array from this CustomFile
      *
      * @param path - path to the itemstack array
-     * @return ItemStack[]
+     * @return ItemStack[] or null
      */
     public ItemStack[] getItems(String path)
     {
         ArrayList<ItemStack> list = new ArrayList<ItemStack>();
-        for (Map<?, ?> i : (path != null ? this.getConfig().getConfigurationSection(path.toLowerCase()).getMapList("items") : this.getConfig().getMapList("items")))
+        ConfigurationSection section = this.getConfig().getConfigurationSection(path.toLowerCase());
+        if (section != null)
         {
-            ItemStack item = ItemStack.deserialize((Map<String, Object>) i);
-            list.add(item);
+            return new Gson().fromJson(section.getString("items"), ItemStack[].class);
         }
-        return list.toArray(new ItemStack[list.size()]);
+        return null;
     }
 
     /**
@@ -157,15 +161,15 @@ public class CustomFile
      */
     public void setItems(String path, ItemStack[] items)
     {
-        ArrayList<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        List<ItemStack> list = new ArrayList<ItemStack>();
         for (ItemStack item : items)
         {
             if (item != null && item.getType() != Material.AIR)
             {
-                list.add(item.serialize());
+                list.add(item);
             }
         }
-        this.getConfig().set(path.toLowerCase() + ".items", list);
+        this.getConfig().set(path.toLowerCase() + ".items", new Gson().toJson(list.toArray(new ItemStack[0])));
         this.saveConfig();
     }
 }
