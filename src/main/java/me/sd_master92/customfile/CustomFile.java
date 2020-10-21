@@ -42,7 +42,7 @@ public class CustomFile
             {
                 plugin.saveResource(name, false);
             }
-            config.load(loc);
+            getConfig().load(loc);
         } catch (Exception e)
         {
             e.printStackTrace();
@@ -64,7 +64,7 @@ public class CustomFile
     {
         try
         {
-            this.getConfig().save(loc);
+            getConfig().save(loc);
         } catch (Exception e)
         {
             e.printStackTrace();
@@ -93,7 +93,7 @@ public class CustomFile
      */
     public Location getLocation(String path)
     {
-        ConfigurationSection section = this.getConfig().getConfigurationSection(path);
+        ConfigurationSection section = getConfig().getConfigurationSection(path);
         if (section != null)
         {
             double x = section.getDouble("x");
@@ -119,20 +119,20 @@ public class CustomFile
      */
     public void setLocation(String path, Location loc)
     {
-        this.getConfig().set(path + ".x", loc.getX());
-        this.getConfig().set(path + ".y", loc.getY());
-        this.getConfig().set(path + ".z", loc.getZ());
-        this.getConfig().set(path + ".pit", loc.getPitch());
-        this.getConfig().set(path + ".yaw", loc.getYaw());
+        getConfig().set(path + ".x", loc.getX());
+        getConfig().set(path + ".y", loc.getY());
+        getConfig().set(path + ".z", loc.getZ());
+        getConfig().set(path + ".pit", loc.getPitch());
+        getConfig().set(path + ".yaw", loc.getYaw());
         World w = loc.getWorld();
         if (w != null)
         {
-            this.getConfig().set(path + ".world", loc.getWorld().getName());
+            getConfig().set(path + ".world", loc.getWorld().getName());
         } else
         {
-            this.getConfig().set(path + ".world", "world");
+            getConfig().set(path + ".world", "world");
         }
-        this.saveConfig();
+        saveConfig();
     }
 
     /**
@@ -144,7 +144,7 @@ public class CustomFile
     public ItemStack[] getItems(String path)
     {
         ArrayList<ItemStack> list = new ArrayList<ItemStack>();
-        ConfigurationSection section = this.getConfig().getConfigurationSection(path.toLowerCase());
+        ConfigurationSection section = getConfig().getConfigurationSection(path.toLowerCase());
         if (section != null)
         {
             return new Gson().fromJson(section.getString("items"), ItemStack[].class);
@@ -169,7 +169,7 @@ public class CustomFile
                 list.add(item);
             }
         }
-        this.getConfig().set(path.toLowerCase() + ".items", new Gson().toJson(list.toArray(new ItemStack[0])));
-        this.saveConfig();
+        getConfig().set(path.toLowerCase() + ".items", new Gson().toJson(list.toArray(new ItemStack[0])));
+        saveConfig();
     }
 }
