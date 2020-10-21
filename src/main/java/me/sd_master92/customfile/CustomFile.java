@@ -97,8 +97,12 @@ public class CustomFile
      */
     public boolean delete(String path)
     {
-        getConfig().set(path.toLowerCase(), null);
-        return saveConfig();
+        if (getConfig().contains(path))
+        {
+            getConfig().set(path.toLowerCase(), null);
+            return saveConfig();
+        }
+        return false;
     }
 
     /**
