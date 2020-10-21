@@ -60,35 +60,51 @@ public class CustomFile
     /**
      * Save changes made to this CustomFile configuration
      */
-    public void saveConfig()
+    public boolean saveConfig()
     {
         try
         {
             getConfig().save(loc);
+            return true;
         } catch (Exception e)
         {
-            e.printStackTrace();
+            return false;
         }
     }
 
     /**
      * Reload the configuration from this CustomFile
+     *
+     * @return successful or not
      */
-    public void reloadConfig()
+    public boolean reloadConfig()
     {
         try
         {
-            this.getConfig().load(loc);
+            getConfig().load(loc);
+            return true;
         } catch (Exception e)
         {
-            e.printStackTrace();
+            return false;
         }
     }
 
     /**
-     * Retrieve a location from this CustomFile
+     * Delete a path from this CustomFile (does not require #saveConfig())
      *
-     * @param path - path to the location
+     * @param path - path to delete
+     * @return successful or not
+     */
+    public boolean delete(String path)
+    {
+        getConfig().set(path.toLowerCase(), null);
+        return saveConfig();
+    }
+
+    /**
+     * Retrieve a Location from this CustomFile
+     *
+     * @param path - path to the Location
      * @return Location or null
      */
     public Location getLocation(String path)
@@ -112,12 +128,13 @@ public class CustomFile
     }
 
     /**
-     * Save a location to this CustomFile (does not require #saveConfig())
+     * Save a Location to this CustomFile (does not require #saveConfig())
      *
-     * @param path - path to this location
-     * @param loc  - location to save
+     * @param path - path to this Location
+     * @param loc  - Location to save
+     * @return successful or not
      */
-    public void setLocation(String path, Location loc)
+    public boolean setLocation(String path, Location loc)
     {
         getConfig().set(path + ".x", loc.getX());
         getConfig().set(path + ".y", loc.getY());
@@ -132,13 +149,13 @@ public class CustomFile
         {
             getConfig().set(path + ".world", "world");
         }
-        saveConfig();
+        return saveConfig();
     }
 
     /**
-     * Retrieve an itemstack array from this CustomFile
+     * Retrieve an ItemStack array from this CustomFile
      *
-     * @param path - path to the itemstack array
+     * @param path - path to the ItemStack array
      * @return ItemStack[] or null
      */
     public ItemStack[] getItems(String path)
@@ -153,13 +170,14 @@ public class CustomFile
     }
 
     /**
-     * Save an itemstack array (like inventory/chest content) to this CustomFile
+     * Save an ItemStack array (like inventory/chest content) to this CustomFile
      * (does not require #saveConfig())
      *
-     * @param path  - path to this itemstack array
-     * @param items - itemstack array to save
+     * @param path  - path to this ItemStack array
+     * @param items - ItemStack array to save
+     * @return successful or not
      */
-    public void setItems(String path, ItemStack[] items)
+    public boolean setItems(String path, ItemStack[] items)
     {
         List<ItemStack> list = new ArrayList<ItemStack>();
         for (ItemStack item : items)
@@ -170,6 +188,6 @@ public class CustomFile
             }
         }
         getConfig().set(path.toLowerCase() + ".items", new Gson().toJson(list.toArray(new ItemStack[0])));
-        saveConfig();
+        return saveConfig();
     }
 }
