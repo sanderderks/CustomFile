@@ -18,17 +18,17 @@ import java.util.List;
 public class CustomFile
 {
     private final FileConfiguration config = new YamlConfiguration();
-    private File loc = null;
+    private File file;
 
     /**
      * Create a new CustomFile instance
      *
-     * @param name   - name of the file
-     * @param plugin - main plugin class
+     * @param folder folder of the file
+     * @param name   name of the file
+     * @param plugin main plugin class
      */
-    public CustomFile(String name, Plugin plugin)
+    public CustomFile(File folder, String name, Plugin plugin)
     {
-        File folder = plugin.getDataFolder();
         try
         {
             if (!folder.exists() && !folder.mkdirs())
@@ -36,13 +36,13 @@ public class CustomFile
                 throw new Exception("Could not generate folder");
             }
 
-            loc = new File(folder, name);
+            file = new File(folder, name.toLowerCase());
 
-            if (!loc.exists() && !loc.createNewFile())
+            if (!file.exists() && !file.createNewFile())
             {
-                plugin.saveResource(name, false);
+                plugin.saveResource(name.toLowerCase(), false);
             }
-            getConfig().load(loc);
+            getConfig().load(file);
         } catch (Exception e)
         {
             e.printStackTrace();
@@ -50,21 +50,26 @@ public class CustomFile
     }
 
     /**
-     * Get the configuration from this CustomFile
+     * Create a new CustomFile instance
+     *
+     * @param name   name of the file
+     * @param plugin main plugin class
      */
+    public CustomFile(String name, Plugin plugin)
+    {
+        this(plugin.getDataFolder(), name, plugin);
+    }
+
     public FileConfiguration getConfig()
     {
         return config;
     }
 
-    /**
-     * Save changes made to this CustomFile configuration
-     */
     public boolean saveConfig()
     {
         try
         {
-            getConfig().save(loc);
+            getConfig().save(file);
             return true;
         } catch (Exception e)
         {
@@ -72,16 +77,11 @@ public class CustomFile
         }
     }
 
-    /**
-     * Reload the configuration from this CustomFile
-     *
-     * @return successful or not
-     */
     public boolean reloadConfig()
     {
         try
         {
-            getConfig().load(loc);
+            getConfig().load(file);
             return true;
         } catch (Exception e)
         {
@@ -89,12 +89,11 @@ public class CustomFile
         }
     }
 
-    /**
-     * Delete a path from this CustomFile (does not require #saveConfig())
-     *
-     * @param path - path to delete
-     * @return successful or not
-     */
+    public boolean delete()
+    {
+        return file.delete();
+    }
+
     public boolean delete(String path)
     {
         if (getConfig().contains(path))
@@ -105,15 +104,9 @@ public class CustomFile
         return false;
     }
 
-    /**
-     * Retrieve a Location from this CustomFile
-     *
-     * @param path - path to the Location
-     * @return Location or null
-     */
     public Location getLocation(String path)
     {
-        ConfigurationSection section = getConfig().getConfigurationSection(path);
+        ConfigurationSection section = getConfig().getConfigurationSection("locations." + path.toLowerCase());
         if (section != null)
         {
             double x = section.getDouble("x");
@@ -131,15 +124,9 @@ public class CustomFile
         return null;
     }
 
-    /**
-     * Save a Location to this CustomFile (does not require #saveConfig())
-     *
-     * @param path - path to this Location
-     * @param loc  - Location to save
-     * @return successful or not
-     */
     public boolean setLocation(String path, Location loc)
     {
+        path = "locations." + path.toLowerCase();
         getConfig().set(path + ".x", loc.getX());
         getConfig().set(path + ".y", loc.getY());
         getConfig().set(path + ".z", loc.getZ());
@@ -156,31 +143,17 @@ public class CustomFile
         return saveConfig();
     }
 
-    /**
-     * Retrieve an ItemStack array from this CustomFile
-     *
-     * @param path - path to the ItemStack array
-     * @return ItemStack[] or null
-     */
     public ItemStack[] getItems(String path)
     {
+        ConfigurationSection section = getConfig().getConfigurationSection("items");
         ArrayList<ItemStack> list = new ArrayList<ItemStack>();
-        ConfigurationSection section = getConfig().getConfigurationSection(path.toLowerCase());
         if (section != null)
         {
-            return new Gson().fromJson(section.getString("items"), ItemStack[].class);
+            return new Gson().fromJson(section.getString(path.toLowerCase()), ItemStack[].class);
         }
         return null;
     }
 
-    /**
-     * Save an ItemStack array (like inventory/chest content) to this CustomFile
-     * (does not require #saveConfig())
-     *
-     * @param path  - path to this ItemStack array
-     * @param items - ItemStack array to save
-     * @return successful or not
-     */
     public boolean setItems(String path, ItemStack[] items)
     {
         List<ItemStack> list = new ArrayList<ItemStack>();
@@ -191,7 +164,7 @@ public class CustomFile
                 list.add(item);
             }
         }
-        getConfig().set(path.toLowerCase() + ".items", new Gson().toJson(list.toArray(new ItemStack[0])));
+        getConfig().set("items." + path.toLowerCase(), new Gson().toJson(list.toArray(new ItemStack[0])));
         return saveConfig();
     }
 }
