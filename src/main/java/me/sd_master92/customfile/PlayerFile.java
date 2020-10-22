@@ -1,6 +1,6 @@
 package me.sd_master92.customfile;
 
-import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
@@ -21,6 +21,19 @@ public class PlayerFile extends CustomFile
         this.uuid = uuid.toLowerCase();
     }
 
+    /**
+     * Create a new PlayerFile instance
+     * (This will automatically save all possible player properties)
+     *
+     * @param player the player
+     * @param plugin main plugin class
+     */
+    public PlayerFile(Player player, Plugin plugin)
+    {
+        this(player.getUniqueId().toString(), plugin);
+        setName(player.getName());
+    }
+
     public String getUuid()
     {
         return uuid;
@@ -35,25 +48,5 @@ public class PlayerFile extends CustomFile
     {
         getConfig().set("name", name);
         return saveConfig();
-    }
-
-    public Location getHome(String name)
-    {
-        return getLocation(name);
-    }
-
-    public Location getHome()
-    {
-        return getHome("home");
-    }
-
-    public boolean setHome(String name, Location loc)
-    {
-        return setLocation(name, loc);
-    }
-
-    public boolean setHome(Location loc)
-    {
-        return setHome("home", loc);
     }
 }

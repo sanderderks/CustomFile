@@ -104,6 +104,35 @@ public class CustomFile
         return false;
     }
 
+    public int getNumber(String path)
+    {
+        return getConfig().getInt(path.toLowerCase());
+    }
+
+    public boolean setNumber(String path, int number)
+    {
+        getConfig().set(path.toLowerCase(), number);
+        return saveConfig();
+    }
+
+    public boolean addOrSubtractNumber(String path, int addOrSubtract)
+    {
+        if (addOrSubtract != 0)
+        {
+            Object found = getConfig().get(path.toLowerCase());
+            if (found instanceof Integer)
+            {
+                int number = (int) found;
+
+                number += addOrSubtract;
+
+                getConfig().set(path.toLowerCase(), number);
+                return saveConfig();
+            }
+        }
+        return false;
+    }
+
     public Location getLocation(String path)
     {
         ConfigurationSection section = getConfig().getConfigurationSection("locations." + path.toLowerCase());
@@ -126,19 +155,19 @@ public class CustomFile
 
     public boolean setLocation(String path, Location loc)
     {
-        path = "locations." + path.toLowerCase();
-        getConfig().set(path + ".x", loc.getX());
-        getConfig().set(path + ".y", loc.getY());
-        getConfig().set(path + ".z", loc.getZ());
-        getConfig().set(path + ".pit", loc.getPitch());
-        getConfig().set(path + ".yaw", loc.getYaw());
+        String section = "locations." + path.toLowerCase();
+        getConfig().set(section + ".x", loc.getX());
+        getConfig().set(section + ".y", loc.getY());
+        getConfig().set(section + ".z", loc.getZ());
+        getConfig().set(section + ".pit", loc.getPitch());
+        getConfig().set(section + ".yaw", loc.getYaw());
         World w = loc.getWorld();
         if (w != null)
         {
-            getConfig().set(path + ".world", loc.getWorld().getName());
+            getConfig().set(section + ".world", loc.getWorld().getName());
         } else
         {
-            getConfig().set(path + ".world", "world");
+            getConfig().set(section + ".world", "world");
         }
         return saveConfig();
     }
