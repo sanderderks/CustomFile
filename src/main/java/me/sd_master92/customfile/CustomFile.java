@@ -38,9 +38,18 @@ public class CustomFile
 
             file = new File(folder, name.toLowerCase());
 
-            if (!file.exists() && !file.createNewFile())
+            if (!file.exists())
             {
-                plugin.saveResource(name.toLowerCase(), false);
+                try
+                {
+                    plugin.saveResource(name.toLowerCase(), false);
+                } catch (Exception e)
+                {
+                    if (!file.createNewFile())
+                    {
+                        throw new Exception("Could not generate file '" + name.toLowerCase() + "'");
+                    }
+                }
             }
             getConfig().load(file);
         } catch (Exception e)
