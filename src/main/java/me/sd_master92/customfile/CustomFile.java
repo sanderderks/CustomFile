@@ -124,16 +124,16 @@ public class CustomFile
         return saveConfig();
     }
 
-    public boolean addOrSubtractNumber(String path, int addOrSubtract)
+    public boolean addNumber(String path, int add)
     {
-        if (addOrSubtract != 0)
+        if (add != 0)
         {
             Object found = getConfig().get(path.toLowerCase());
             if (found instanceof Integer)
             {
                 int number = (int) found;
 
-                number += addOrSubtract;
+                number += add;
 
                 getConfig().set(path.toLowerCase(), number);
                 return saveConfig();

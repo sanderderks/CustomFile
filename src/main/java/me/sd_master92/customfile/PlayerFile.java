@@ -17,7 +17,7 @@ public class PlayerFile extends CustomFile
      */
     public PlayerFile(String uuid, Plugin plugin)
     {
-        super(new File(plugin.getDataFolder() + File.separator + "players"), uuid + ".yml", plugin);
+        super(new File(plugin.getDataFolder() + File.separator + "players"), uuid, plugin);
         this.uuid = uuid.toLowerCase();
     }
 
