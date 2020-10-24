@@ -4,6 +4,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlayerFile extends CustomFile
 {
@@ -48,5 +50,24 @@ public class PlayerFile extends CustomFile
     {
         getConfig().set("name", name);
         return saveConfig();
+    }
+
+    public static List<PlayerFile> getAll(Plugin plugin)
+    {
+        List<PlayerFile> playerFiles = new ArrayList<>();
+        File folder = new File(plugin.getDataFolder() + File.separator + "players");
+        if (folder.exists())
+        {
+            File[] files = folder.listFiles();
+            if (files != null)
+            {
+                for (File file : files)
+                {
+                    String uuid = file.getName();
+                    System.out.println(uuid);
+                }
+            }
+        }
+        return playerFiles;
     }
 }
