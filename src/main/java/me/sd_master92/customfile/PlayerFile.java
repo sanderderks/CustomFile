@@ -19,7 +19,7 @@ public class PlayerFile extends CustomFile
      */
     public PlayerFile(String uuid, Plugin plugin)
     {
-        super(new File(plugin.getDataFolder() + File.separator + "players"), uuid, plugin);
+        super(new File(plugin.getDataFolder() + File.separator + "players"), uuid + ".yml", plugin);
         this.uuid = uuid.toLowerCase();
     }
 
@@ -36,6 +36,28 @@ public class PlayerFile extends CustomFile
         setName(player.getName());
     }
 
+    public static List<PlayerFile> getAll(Plugin plugin)
+    {
+        List<PlayerFile> playerFiles = new ArrayList<>();
+        File folder = new File(plugin.getDataFolder() + File.separator + "players");
+        if (folder.exists())
+        {
+            File[] files = folder.listFiles();
+            if (files != null)
+            {
+                for (File file : files)
+                {
+                    String uuid = file.getName().replace(".yml", "");
+                    if (!uuid.isEmpty())
+                    {
+                        playerFiles.add(new PlayerFile(uuid, plugin));
+                    }
+                }
+            }
+        }
+        return playerFiles;
+    }
+
     public String getUuid()
     {
         return uuid;
@@ -50,24 +72,5 @@ public class PlayerFile extends CustomFile
     {
         getConfig().set("name", name);
         return saveConfig();
-    }
-
-    public static List<PlayerFile> getAll(Plugin plugin)
-    {
-        List<PlayerFile> playerFiles = new ArrayList<>();
-        File folder = new File(plugin.getDataFolder() + File.separator + "players");
-        if (folder.exists())
-        {
-            File[] files = folder.listFiles();
-            if (files != null)
-            {
-                for (File file : files)
-                {
-                    String uuid = file.getName();
-                    System.out.println(uuid);
-                }
-            }
-        }
-        return playerFiles;
     }
 }
