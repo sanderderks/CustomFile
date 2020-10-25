@@ -21,10 +21,6 @@ public class PlayerFile extends CustomFile
     {
         super(new File(plugin.getDataFolder() + File.separator + "players"), uuid + ".yml", plugin);
         this.uuid = uuid.toLowerCase();
-        if (getName() == null)
-        {
-            setName("unknown");
-        }
     }
 
     /**
@@ -38,6 +34,18 @@ public class PlayerFile extends CustomFile
     {
         this(player.getUniqueId().toString(), plugin);
         setName(player.getName());
+    }
+
+    public static PlayerFile getByName(String name, Plugin plugin)
+    {
+        for (PlayerFile playerFile : getAll(plugin))
+        {
+            if (playerFile.getName().equalsIgnoreCase(name))
+            {
+                return playerFile;
+            }
+        }
+        return null;
     }
 
     public static List<PlayerFile> getAll(Plugin plugin)
@@ -69,7 +77,12 @@ public class PlayerFile extends CustomFile
 
     public String getName()
     {
-        return getConfig().getString("name");
+        String name = getConfig().getString("name");
+        if (name != null)
+        {
+            return name;
+        }
+        return "unknown";
     }
 
     public boolean setName(String name)
