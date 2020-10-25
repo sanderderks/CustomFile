@@ -1,10 +1,7 @@
 package me.sd_master92.customfile;
 
 import com.google.gson.Gson;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -235,5 +232,52 @@ public class CustomFile
         }
         getConfig().set("items." + path.toLowerCase(), new Gson().toJson(list.toArray(new ItemStack[0])));
         return saveConfig();
+    }
+
+    public String getMessage(String path, Map<String, String> placeholders)
+    {
+        String message = getConfig().getString(path.toLowerCase());
+        if (message != null)
+        {
+            message = ChatColor.translateAlternateColorCodes('&', message);
+            if (placeholders != null)
+            {
+                for (String placeholder : placeholders.keySet())
+                {
+                    message = message.replace(placeholder, placeholders.get(placeholder));
+                }
+            }
+            return message;
+        }
+        return "";
+    }
+
+    public List<String> getMessages(String path, Map<String, String> placeholders, boolean replaceFirst)
+    {
+        List<String> messages = getConfig().getStringList(path.toLowerCase());
+        for (int i = 0; i < messages.size(); i++)
+        {
+            String message = ChatColor.translateAlternateColorCodes('&', messages.get(i));
+            if (placeholders != null)
+            {
+                for (String placeholder : placeholders.keySet())
+                {
+                    if (replaceFirst)
+                    {
+                        message = message.replaceFirst(placeholder, placeholders.get(placeholder));
+                    } else
+                    {
+                        message = message.replace(placeholder, placeholders.get(placeholder));
+                    }
+                }
+            }
+            messages.set(i, message);
+        }
+        return messages;
+    }
+
+    public List<String> getMessages(String path, Map<String, String> placeholders)
+    {
+        return getMessages(path.toLowerCase(), placeholders, false);
     }
 }
