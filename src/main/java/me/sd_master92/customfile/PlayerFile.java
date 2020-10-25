@@ -21,6 +21,10 @@ public class PlayerFile extends CustomFile
     {
         super(new File(plugin.getDataFolder() + File.separator + "players"), uuid + ".yml", plugin);
         this.uuid = uuid.toLowerCase();
+        if (getName() == null)
+        {
+            setName("unknown");
+        }
     }
 
     /**

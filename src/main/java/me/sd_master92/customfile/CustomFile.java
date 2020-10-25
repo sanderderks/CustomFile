@@ -13,7 +13,9 @@ import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CustomFile
 {
@@ -113,6 +115,17 @@ public class CustomFile
         return false;
     }
 
+    public long getTimeStamp(String path)
+    {
+        return getConfig().getLong(path.toLowerCase());
+    }
+
+    public boolean setTimeStamp(String path)
+    {
+        getConfig().set(path.toLowerCase(), System.currentTimeMillis());
+        return saveConfig();
+    }
+
     public int getNumber(String path)
     {
         return getConfig().getInt(path.toLowerCase());
@@ -140,6 +153,24 @@ public class CustomFile
             }
         }
         return false;
+    }
+
+    public Map<String, Location> getLocations(String path)
+    {
+        HashMap<String, Location> locations = new HashMap<>();
+        ConfigurationSection section = getConfig().getConfigurationSection("locations." + path.toLowerCase());
+        if (section != null)
+        {
+            for (String key : section.getKeys(false))
+            {
+                Location loc = getLocation(path.toLowerCase() + "." + key);
+                if (loc != null)
+                {
+                    locations.put(key, loc);
+                }
+            }
+        }
+        return locations;
     }
 
     public Location getLocation(String path)
