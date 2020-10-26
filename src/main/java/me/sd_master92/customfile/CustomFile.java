@@ -1,6 +1,5 @@
 package me.sd_master92.customfile;
 
-import com.google.gson.Gson;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -212,17 +211,27 @@ public class CustomFile
     public ItemStack[] getItems(String path)
     {
         ConfigurationSection section = getConfig().getConfigurationSection("items");
-        ArrayList<ItemStack> list = new ArrayList<ItemStack>();
+        ArrayList<ItemStack> items = new ArrayList<>();
         if (section != null)
         {
-            return new Gson().fromJson(section.getString(path.toLowerCase()), ItemStack[].class);
+            Object object = section.get(path.toLowerCase());
+            if (object instanceof ArrayList)
+            {
+                for (Object item : (ArrayList<?>) object)
+                {
+                    if (item instanceof ItemStack)
+                    {
+                        items.add((ItemStack) item);
+                    }
+                }
+            }
         }
-        return null;
+        return items.toArray(new ItemStack[0]);
     }
 
     public boolean setItems(String path, ItemStack[] items)
     {
-        List<ItemStack> list = new ArrayList<ItemStack>();
+        ArrayList<ItemStack> list = new ArrayList<>();
         for (ItemStack item : items)
         {
             if (item != null && item.getType() != Material.AIR)
@@ -230,7 +239,7 @@ public class CustomFile
                 list.add(item);
             }
         }
-        getConfig().set("items." + path.toLowerCase(), new Gson().toJson(list.toArray(new ItemStack[0])));
+        getConfig().set("items." + path.toLowerCase(), list);
         return saveConfig();
     }
 
