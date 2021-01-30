@@ -32,7 +32,7 @@ config.getItems("some_path");
 
 If this wasn't enough, this repository also includes PlayerFile, which is an extension of CustomFile, to make per-player-files a lot easier!
 
-- Create an instance of PlayerFile:
+### - Create an instance of PlayerFile:
 
 ```
 PlayerFile playerFile = new PlayerFile(player.getUniqueId(), plugin);
