@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.sd_master92</groupId>
     <artifactId>customfile</artifactId>
-    <version>1.6</version>
+    <version>1.7</version>
     <name>CustomFile</name>
     <description>Custom configuration files for Spigot</description>
 
