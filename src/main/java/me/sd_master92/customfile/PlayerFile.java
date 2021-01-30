@@ -12,7 +12,7 @@ public class PlayerFile extends CustomFile
     private final String uuid;
 
     /**
-     * Create a new PlayerFile instance
+     * create a new PlayerFile instance
      *
      * @param uuid   uuid of this player
      * @param plugin main plugin class
@@ -24,8 +24,8 @@ public class PlayerFile extends CustomFile
     }
 
     /**
-     * Create a new PlayerFile instance
-     * (This will automatically save all possible player properties)
+     * create a new PlayerFile instance
+     * (this will automatically save all possible player properties)
      *
      * @param player the player
      * @param plugin main plugin class
@@ -36,6 +36,13 @@ public class PlayerFile extends CustomFile
         setName(player.getName());
     }
 
+    /**
+     * get a PlayerFile by player name
+     *
+     * @param name   player name
+     * @param plugin main plugin class
+     * @return PlayerFile or null
+     */
     public static PlayerFile getByName(String name, Plugin plugin)
     {
         for (PlayerFile playerFile : getAll(plugin))
@@ -48,6 +55,12 @@ public class PlayerFile extends CustomFile
         return null;
     }
 
+    /**
+     * get all PlayerFiles
+     *
+     * @param plugin main plugin class
+     * @return empty or filled list of PlayerFiles
+     */
     public static List<PlayerFile> getAll(Plugin plugin)
     {
         List<PlayerFile> playerFiles = new ArrayList<>();
@@ -70,14 +83,20 @@ public class PlayerFile extends CustomFile
         return playerFiles;
     }
 
+    /**
+     * get the unique id of this PlayerFile
+     *
+     * @return uuid or null
+     */
     public String getUuid()
     {
         return uuid;
     }
 
+    @Override
     public String getName()
     {
-        String name = getConfig().getString("name");
+        String name = getString("name");
         if (name != null)
         {
             return name;
@@ -85,9 +104,15 @@ public class PlayerFile extends CustomFile
         return "unknown";
     }
 
+    /**
+     * set the name of the player
+     *
+     * @param name player name
+     * @return successful or not
+     */
     public boolean setName(String name)
     {
-        getConfig().set("name", name);
+        set("name", name);
         return saveConfig();
     }
 }
