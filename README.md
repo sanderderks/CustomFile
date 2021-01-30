@@ -18,7 +18,7 @@ config.setItems("some_path", player.getInventory.getContents());
 
 // The extension methods provided by CustomFile do not require a call to #saveConfig.
 // Similar functions are available for e.g. Locations, Messages (strings with colorcodes AND placeholders) and more!
-// Methods that might fail, will not NEVER throw an EXCEPTION. Instead a Boolean value is returned, so you can decide how to handle failures.
+// Methods that might fail, will NEVER throw an EXCEPTION. Instead a Boolean value is returned, so you can decide how to handle failures.
 
 - Retrieve a player's inventory:
 
