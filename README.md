@@ -1,5 +1,5 @@
 # CustomFile
-Custom configuration files for Spigot
+## Custom configuration files for Spigot
 
 A CustomFile is an extension to YamlConfiguration and makes creating configuration files and working with stored data very easy!
 
