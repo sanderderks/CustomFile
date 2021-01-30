@@ -26,7 +26,9 @@ config.setItems("some_path", player.getInventory.getContents());
 
 ### - Retrieve a player's inventory:
 
+```
 config.getItems("some_path");
+```
 
 // Methods like these will NEVER return NULL. An empty list is returned instead when the items do not exist. This means less checks in your code!
 
