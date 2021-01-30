@@ -1,9 +1,7 @@
 package me.sd_master92.customfile;
 
-import com.google.gson.Gson;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -14,20 +12,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CustomFile
+public class CustomFile extends YamlConfiguration
 {
-    private final FileConfiguration config = new YamlConfiguration();
     private File file;
 
     /**
-     * Create a new CustomFile instance
+     * create a new CustomFile
      *
-     * @param folder folder of the file
-     * @param name   name of the file
-     * @param plugin main plugin class
+     * @param folder folder of this CustomFile
+     * @param name   name of this CustomFile
+     * @param plugin main Plugin class
      */
     public CustomFile(File folder, String name, Plugin plugin)
     {
+        super();
         try
         {
             if (!folder.exists() && !folder.mkdirs())
@@ -50,7 +48,7 @@ public class CustomFile
                     }
                 }
             }
-            getConfig().load(file);
+            load(file);
         } catch (Exception e)
         {
             e.printStackTrace();
@@ -58,26 +56,26 @@ public class CustomFile
     }
 
     /**
-     * Create a new CustomFile instance
+     * create a new CustomFile
      *
-     * @param name   name of the file
-     * @param plugin main plugin class
+     * @param name   name of this CustomFile
+     * @param plugin main Plugin class
      */
     public CustomFile(String name, Plugin plugin)
     {
         this(plugin.getDataFolder(), name, plugin);
     }
 
-    public FileConfiguration getConfig()
-    {
-        return config;
-    }
-
+    /**
+     * save config
+     *
+     * @return successful or not
+     */
     public boolean saveConfig()
     {
         try
         {
-            getConfig().save(file);
+            save(file);
             return true;
         } catch (Exception e)
         {
@@ -85,11 +83,16 @@ public class CustomFile
         }
     }
 
+    /**
+     * reload config
+     *
+     * @return successful or not
+     */
     public boolean reloadConfig()
     {
         try
         {
-            getConfig().load(file);
+            load(file);
             return true;
         } catch (Exception e)
         {
@@ -97,65 +100,114 @@ public class CustomFile
         }
     }
 
+    /**
+     * delete this file
+     *
+     * @return successful or not
+     */
     public boolean delete()
     {
         return file.delete();
     }
 
+    /**
+     * delete a path from config
+     *
+     * @param path config path
+     * @return successful or not
+     */
     public boolean delete(String path)
     {
-        if (getConfig().contains(path))
+        if (contains(path))
         {
-            getConfig().set(path.toLowerCase(), null);
+            set(path.toLowerCase(), null);
             return saveConfig();
         }
         return false;
     }
 
+    /**
+     * get a timestamp
+     *
+     * @param path config path
+     * @return number
+     */
     public long getTimeStamp(String path)
     {
-        return getConfig().getLong(path.toLowerCase());
+        return getLong(path.toLowerCase());
     }
 
+    /**
+     * save a timestamp
+     *
+     * @param path config path
+     * @return successful or not
+     */
     public boolean setTimeStamp(String path)
     {
-        getConfig().set(path.toLowerCase(), System.currentTimeMillis());
+        set(path.toLowerCase(), System.currentTimeMillis());
         return saveConfig();
     }
 
+    /**
+     * get a number
+     *
+     * @param path config path
+     * @return number
+     */
     public int getNumber(String path)
     {
-        return getConfig().getInt(path.toLowerCase());
+        return getInt(path.toLowerCase());
     }
 
+    /**
+     * save a number
+     *
+     * @param path   config path
+     * @param number number to save
+     * @return successful or not
+     */
     public boolean setNumber(String path, int number)
     {
-        getConfig().set(path.toLowerCase(), number);
+        set(path.toLowerCase(), number);
         return saveConfig();
     }
 
+    /**
+     * add x to an existing number
+     *
+     * @param path config path
+     * @param add  number to add
+     * @return successful or not
+     */
     public boolean addNumber(String path, int add)
     {
         if (add != 0)
         {
-            Object found = getConfig().get(path.toLowerCase());
+            Object found = get(path.toLowerCase());
             if (found instanceof Integer)
             {
                 int number = (int) found;
 
                 number += add;
 
-                getConfig().set(path.toLowerCase(), number);
+                set(path.toLowerCase(), number);
                 return saveConfig();
             }
         }
         return false;
     }
 
+    /**
+     * get a list of locations (e.g. a player's homes)
+     *
+     * @param path config path
+     * @return empty or filled map of name -> locations
+     */
     public Map<String, Location> getLocations(String path)
     {
         HashMap<String, Location> locations = new HashMap<>();
-        ConfigurationSection section = getConfig().getConfigurationSection("locations." + path.toLowerCase());
+        ConfigurationSection section = getConfigurationSection("locations." + path.toLowerCase());
         if (section != null)
         {
             for (String key : section.getKeys(false))
@@ -170,9 +222,16 @@ public class CustomFile
         return locations;
     }
 
+    /**
+     * get a location
+     *
+     * @param path config path
+     * @return location or null
+     */
+    @Override
     public Location getLocation(String path)
     {
-        ConfigurationSection section = getConfig().getConfigurationSection("locations." + path.toLowerCase());
+        ConfigurationSection section = getConfigurationSection("locations." + path.toLowerCase());
         if (section != null)
         {
             double x = section.getDouble("x");
@@ -190,39 +249,69 @@ public class CustomFile
         return null;
     }
 
+    /**
+     * save a location
+     *
+     * @param path config path
+     * @param loc  location to save
+     * @return successful or not
+     */
     public boolean setLocation(String path, Location loc)
     {
         String section = "locations." + path.toLowerCase();
-        getConfig().set(section + ".x", loc.getX());
-        getConfig().set(section + ".y", loc.getY());
-        getConfig().set(section + ".z", loc.getZ());
-        getConfig().set(section + ".pit", loc.getPitch());
-        getConfig().set(section + ".yaw", loc.getYaw());
+        set(section + ".x", loc.getX());
+        set(section + ".y", loc.getY());
+        set(section + ".z", loc.getZ());
+        set(section + ".pit", loc.getPitch());
+        set(section + ".yaw", loc.getYaw());
         World w = loc.getWorld();
         if (w != null)
         {
-            getConfig().set(section + ".world", loc.getWorld().getName());
+            set(section + ".world", loc.getWorld().getName());
         } else
         {
-            getConfig().set(section + ".world", "world");
+            set(section + ".world", "world");
         }
         return saveConfig();
     }
 
+    /**
+     * get items
+     *
+     * @param path config path
+     * @return empty or filled array of items
+     */
     public ItemStack[] getItems(String path)
     {
-        ConfigurationSection section = getConfig().getConfigurationSection("items");
-        ArrayList<ItemStack> list = new ArrayList<ItemStack>();
+        ConfigurationSection section = getConfigurationSection("items");
+        ArrayList<ItemStack> items = new ArrayList<>();
         if (section != null)
         {
-            return new Gson().fromJson(section.getString(path.toLowerCase()), ItemStack[].class);
+            Object object = section.get(path.toLowerCase());
+            if (object instanceof ArrayList)
+            {
+                for (Object item : (ArrayList<?>) object)
+                {
+                    if (item instanceof ItemStack)
+                    {
+                        items.add((ItemStack) item);
+                    }
+                }
+            }
         }
-        return null;
+        return items.toArray(new ItemStack[0]);
     }
 
+    /**
+     * save items
+     *
+     * @param path  config path
+     * @param items items to save
+     * @return successful or not
+     */
     public boolean setItems(String path, ItemStack[] items)
     {
-        List<ItemStack> list = new ArrayList<ItemStack>();
+        ArrayList<ItemStack> list = new ArrayList<>();
         for (ItemStack item : items)
         {
             if (item != null && item.getType() != Material.AIR)
@@ -230,13 +319,20 @@ public class CustomFile
                 list.add(item);
             }
         }
-        getConfig().set("items." + path.toLowerCase(), new Gson().toJson(list.toArray(new ItemStack[0])));
+        set("items." + path.toLowerCase(), list);
         return saveConfig();
     }
 
+    /**
+     * get a message
+     *
+     * @param path         config path
+     * @param placeholders placeholders to replace in the message
+     * @return empty or filled string
+     */
     public String getMessage(String path, Map<String, String> placeholders)
     {
-        String message = getConfig().getString(path.toLowerCase());
+        String message = getString(path.toLowerCase());
         if (message != null)
         {
             message = ChatColor.translateAlternateColorCodes('&', message);
@@ -252,9 +348,17 @@ public class CustomFile
         return "";
     }
 
+    /**
+     * get a list of messages
+     *
+     * @param path         config path
+     * @param placeholders placeholders to replace in the messages
+     * @param replaceFirst replace only the first occurrence of a placeholder
+     * @return empty or filled list of messages
+     */
     public List<String> getMessages(String path, Map<String, String> placeholders, boolean replaceFirst)
     {
-        List<String> messages = getConfig().getStringList(path.toLowerCase());
+        List<String> messages = getStringList(path.toLowerCase());
         for (int i = 0; i < messages.size(); i++)
         {
             String message = ChatColor.translateAlternateColorCodes('&', messages.get(i));
@@ -276,6 +380,13 @@ public class CustomFile
         return messages;
     }
 
+    /**
+     * get a list of messages
+     *
+     * @param path         config path
+     * @param placeholders placeholders to replace in the messages
+     * @return empty or filled list of messages
+     */
     public List<String> getMessages(String path, Map<String, String> placeholders)
     {
         return getMessages(path.toLowerCase(), placeholders, false);
