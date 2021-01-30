@@ -4,19 +4,25 @@ Custom configuration files for Spigot
 A CustomFile is an extension to YamlConfiguration and makes creating configuration files and working with stored data very easy!
 
 
+
 HOW IT WORKS
 
 - Create an instance of CustomFile:
 
 CustomFile config = new CustomFile("data.yml", plugin);
 
+
 // Calling the constructor will load the existing file or the file provided in your .jar into this object.
 
 // When these options are not available, a new file will be created and you can start editing it with the available methods.
 
+
+
+
 - Store a player's inventory to this file:
 
 config.setItems("some_path", player.getInventory.getContents());
+
 
 // The extension methods provided by CustomFile do not require a call to #saveConfig.
 
@@ -24,18 +30,27 @@ config.setItems("some_path", player.getInventory.getContents());
 
 // Methods that might fail, will not NEVER throw an EXCEPTION. Instead a Boolean value is returned, so you can decide how to handle failures.
 
+
+
+
 - Retrieve a player's inventory:
 
 config.getItems("some_path");
 
+
 // Methods like these will NEVER return NULL. An empty list is returned instead when the items do not exist. This means less checks in your code!
+
+
+
 
 
 If this wasn't enough, this repository also includes PlayerFile, which is an extension of CustomFile, to make per-player-files a lot easier!
 
+
 - Create an instance of PlayerFile:
 
 PlayerFile playerFile = new PlayerFile(player.getUniqueId(), plugin);
+
 
 // A file will be created by the constructor of CustomFile, but within the folder "Players", and with the UUID as filename.
 
