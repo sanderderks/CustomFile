@@ -199,6 +199,17 @@ public class CustomFile extends YamlConfiguration
     }
 
     /**
+     * add 1 to an existing number
+     *
+     * @param path config path
+     * @return successful or not
+     */
+    public boolean addNumber(String path)
+    {
+        return addNumber(path, 1);
+    }
+
+    /**
      * get a list of locations (e.g. a player's homes)
      *
      * @param path config path
