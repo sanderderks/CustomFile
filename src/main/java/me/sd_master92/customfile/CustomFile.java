@@ -21,7 +21,7 @@ public class CustomFile extends YamlConfiguration
      *
      * @param folder folder of this CustomFile
      * @param name   name of this CustomFile
-     * @param plugin main Plugin class
+     * @param plugin main plugin class
      */
     public CustomFile(File folder, String name, Plugin plugin)
     {
@@ -59,7 +59,7 @@ public class CustomFile extends YamlConfiguration
      * create a new CustomFile
      *
      * @param name   name of this CustomFile
-     * @param plugin main Plugin class
+     * @param plugin main plugin class
      */
     public CustomFile(String name, Plugin plugin)
     {
@@ -349,6 +349,17 @@ public class CustomFile extends YamlConfiguration
     }
 
     /**
+     * get a message
+     *
+     * @param path config path
+     * @return empty or filled string
+     */
+    public String getMessage(String path)
+    {
+        return getMessage(path, null);
+    }
+
+    /**
      * get a list of messages
      *
      * @param path         config path
@@ -390,5 +401,16 @@ public class CustomFile extends YamlConfiguration
     public List<String> getMessages(String path, Map<String, String> placeholders)
     {
         return getMessages(path.toLowerCase(), placeholders, false);
+    }
+
+    /**
+     * get a list of messages
+     *
+     * @param path config path
+     * @return empty or filled list of messages
+     */
+    public List<String> getMessages(String path)
+    {
+        return getMessages(path.toLowerCase(), null, false);
     }
 }

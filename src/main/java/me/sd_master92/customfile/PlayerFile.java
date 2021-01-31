@@ -21,6 +21,7 @@ public class PlayerFile extends CustomFile
     {
         super(new File(plugin.getDataFolder() + File.separator + "players"), uuid + ".yml", plugin);
         this.uuid = uuid.toLowerCase();
+        setFirstJoinTime();
     }
 
     /**
@@ -84,6 +85,25 @@ public class PlayerFile extends CustomFile
     }
 
     /**
+     * save first join timestamp
+     */
+    private void setFirstJoinTime()
+    {
+        if (getTimeStamp("first_join") == 0)
+        {
+            setTimeStamp("first_join");
+        }
+    }
+
+    /**
+     * get first join timestamp
+     */
+    private long getFirstJoinTime()
+    {
+        return getTimeStamp("first_join");
+    }
+
+    /**
      * get the unique id of this PlayerFile
      *
      * @return uuid or null
@@ -93,6 +113,11 @@ public class PlayerFile extends CustomFile
         return uuid;
     }
 
+    /**
+     * get the name of the player
+     *
+     * @return name or "unknown"
+     */
     @Override
     public String getName()
     {
@@ -105,7 +130,7 @@ public class PlayerFile extends CustomFile
     }
 
     /**
-     * set the name of the player
+     * save the name of the player
      *
      * @param name player name
      * @return successful or not
