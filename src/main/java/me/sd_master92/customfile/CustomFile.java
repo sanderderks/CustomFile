@@ -287,6 +287,18 @@ public class CustomFile extends YamlConfiguration
     }
 
     /**
+     * delete a location
+     *
+     * @param path config path
+     * @return successful or not
+     */
+    public boolean deleteLocation(String path)
+    {
+        set("locations." + path.toLowerCase(), null);
+        return saveConfig();
+    }
+
+    /**
      * get items
      *
      * @param path config path
@@ -332,6 +344,17 @@ public class CustomFile extends YamlConfiguration
         }
         set("items." + path.toLowerCase(), list);
         return saveConfig();
+    }
+
+    /**
+     * delete items
+     *
+     * @param path config path
+     * @return successful or not
+     */
+    public boolean deleteItems(String path)
+    {
+        return delete("items." + path);
     }
 
     /**
