@@ -239,7 +239,6 @@ public class CustomFile extends YamlConfiguration
      * @param path config path
      * @return location or null
      */
-    @Override
     public Location getLocation(String path)
     {
         ConfigurationSection section = getConfigurationSection("locations." + path.toLowerCase());
