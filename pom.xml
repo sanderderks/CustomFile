@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.sd_master92</groupId>
-    <artifactId>customfile</artifactId>
+    <artifactId>CustomFile</artifactId>
     <version>1.7</version>
     <name>CustomFile</name>
     <description>Custom configuration files for Spigot</description>
