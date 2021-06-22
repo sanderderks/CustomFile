@@ -8,9 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CustomFile extends YamlConfiguration
 {
@@ -272,6 +270,7 @@ public class CustomFile extends YamlConfiguration
      */
     public boolean setItems(String path, ItemStack[] items)
     {
+        items = Arrays.stream(items).filter(Objects::nonNull).toArray(ItemStack[]::new);
         set("items." + path.toLowerCase(), items);
         return saveConfig();
     }
