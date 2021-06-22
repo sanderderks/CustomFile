@@ -1,13 +1,13 @@
 package me.sd_master92.customfile;
 
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -118,12 +118,8 @@ public class CustomFile extends YamlConfiguration
      */
     public boolean delete(String path)
     {
-        if (contains(path))
-        {
-            set(path.toLowerCase(), null);
-            return saveConfig();
-        }
-        return false;
+        set(path.toLowerCase(), null);
+        return saveConfig();
     }
 
     /**
@@ -182,20 +178,8 @@ public class CustomFile extends YamlConfiguration
      */
     public boolean addNumber(String path, int add)
     {
-        if (add != 0)
-        {
-            Object found = get(path.toLowerCase());
-            if (found instanceof Integer)
-            {
-                int number = (int) found;
-
-                number += add;
-
-                set(path.toLowerCase(), number);
-                return saveConfig();
-            }
-        }
-        return false;
+        set(path.toLowerCase(), getInt(path.toLowerCase()) + add);
+        return saveConfig();
     }
 
     /**
@@ -207,6 +191,41 @@ public class CustomFile extends YamlConfiguration
     public boolean addNumber(String path)
     {
         return addNumber(path, 1);
+    }
+
+    /**
+     * get a location
+     *
+     * @param path config path
+     * @return location or null
+     */
+    public Location getLocation(String path)
+    {
+        return getObject("locations." + path.toLowerCase(), Location.class, null);
+    }
+
+    /**
+     * save a location
+     *
+     * @param path config path
+     * @param loc  location to save
+     * @return successful or not
+     */
+    public boolean setLocation(String path, Location loc)
+    {
+        set("locations." + path.toLowerCase(), loc);
+        return saveConfig();
+    }
+
+    /**
+     * delete a location
+     *
+     * @param path config path
+     * @return successful or not
+     */
+    public boolean deleteLocation(String path)
+    {
+        return delete("locations." + path.toLowerCase());
     }
 
     /**
@@ -234,70 +253,6 @@ public class CustomFile extends YamlConfiguration
     }
 
     /**
-     * get a location
-     *
-     * @param path config path
-     * @return location or null
-     */
-    public Location getLocation(String path)
-    {
-        ConfigurationSection section = getConfigurationSection("locations." + path.toLowerCase());
-        if (section != null)
-        {
-            double x = section.getDouble("x");
-            double y = section.getDouble("y");
-            double z = section.getDouble("z");
-            float pit = (float) section.getDouble("pit");
-            float yaw = (float) section.getDouble("yaw");
-            String w = section.getString("world");
-            if (w != null)
-            {
-                World world = Bukkit.getWorld(w);
-                return new Location(world, x, y, z, yaw, pit);
-            }
-        }
-        return null;
-    }
-
-    /**
-     * save a location
-     *
-     * @param path config path
-     * @param loc  location to save
-     * @return successful or not
-     */
-    public boolean setLocation(String path, Location loc)
-    {
-        String section = "locations." + path.toLowerCase();
-        set(section + ".x", loc.getX());
-        set(section + ".y", loc.getY());
-        set(section + ".z", loc.getZ());
-        set(section + ".pit", loc.getPitch());
-        set(section + ".yaw", loc.getYaw());
-        World w = loc.getWorld();
-        if (w != null)
-        {
-            set(section + ".world", loc.getWorld().getName());
-        } else
-        {
-            set(section + ".world", "world");
-        }
-        return saveConfig();
-    }
-
-    /**
-     * delete a location
-     *
-     * @param path config path
-     * @return successful or not
-     */
-    public boolean deleteLocation(String path)
-    {
-        set("locations." + path.toLowerCase(), null);
-        return saveConfig();
-    }
-
-    /**
      * get items
      *
      * @param path config path
@@ -305,23 +260,7 @@ public class CustomFile extends YamlConfiguration
      */
     public ItemStack[] getItems(String path)
     {
-        ConfigurationSection section = getConfigurationSection("items");
-        ArrayList<ItemStack> items = new ArrayList<>();
-        if (section != null)
-        {
-            Object object = section.get(path.toLowerCase());
-            if (object instanceof ArrayList)
-            {
-                for (Object item : (ArrayList<?>) object)
-                {
-                    if (item instanceof ItemStack)
-                    {
-                        items.add((ItemStack) item);
-                    }
-                }
-            }
-        }
-        return items.toArray(new ItemStack[0]);
+        return getObject("items." + path.toLowerCase(), ItemStack[].class, new ItemStack[]{});
     }
 
     /**
@@ -333,15 +272,7 @@ public class CustomFile extends YamlConfiguration
      */
     public boolean setItems(String path, ItemStack[] items)
     {
-        ArrayList<ItemStack> list = new ArrayList<>();
-        for (ItemStack item : items)
-        {
-            if (item != null && item.getType() != Material.AIR)
-            {
-                list.add(item);
-            }
-        }
-        set("items." + path.toLowerCase(), list);
+        set("items." + path.toLowerCase(), items);
         return saveConfig();
     }
 
@@ -353,7 +284,7 @@ public class CustomFile extends YamlConfiguration
      */
     public boolean deleteItems(String path)
     {
-        return delete("items." + path);
+        return delete("items." + path.toLowerCase());
     }
 
     /**

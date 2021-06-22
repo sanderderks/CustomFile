@@ -5,7 +5,9 @@ import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PlayerFile extends CustomFile
 {
@@ -46,14 +48,7 @@ public class PlayerFile extends CustomFile
      */
     public static PlayerFile getByName(String name, Plugin plugin)
     {
-        for (PlayerFile playerFile : getAll(plugin))
-        {
-            if (playerFile.getName().equalsIgnoreCase(name))
-            {
-                return playerFile;
-            }
-        }
-        return null;
+        return getAll(plugin).stream().filter(playerFile -> playerFile.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
     }
 
     /**
@@ -64,24 +59,12 @@ public class PlayerFile extends CustomFile
      */
     public static List<PlayerFile> getAll(Plugin plugin)
     {
-        List<PlayerFile> playerFiles = new ArrayList<>();
-        File folder = new File(plugin.getDataFolder() + File.separator + "players");
-        if (folder.exists())
+        File[] files = new File(plugin.getDataFolder() + File.separator + "players").listFiles();
+        if (files != null)
         {
-            File[] files = folder.listFiles();
-            if (files != null)
-            {
-                for (File file : files)
-                {
-                    String uuid = file.getName().replace(".yml", "");
-                    if (!uuid.isEmpty())
-                    {
-                        playerFiles.add(new PlayerFile(uuid, plugin));
-                    }
-                }
-            }
+            return Arrays.stream(files).map(file -> new PlayerFile(file.getName().replace(".yml", ""), plugin)).collect(Collectors.toList());
         }
-        return playerFiles;
+        return new ArrayList<>();
     }
 
     /**
@@ -122,11 +105,7 @@ public class PlayerFile extends CustomFile
     public String getName()
     {
         String name = getString("name");
-        if (name != null)
-        {
-            return name;
-        }
-        return "unknown";
+        return name != null ? name : "unknown";
     }
 
     /**
