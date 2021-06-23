@@ -258,7 +258,16 @@ public class CustomFile extends YamlConfiguration
      */
     public ItemStack[] getItems(String path)
     {
-        return getObject("items." + path.toLowerCase(), ItemStack[].class, new ItemStack[]{});
+        List<?> list = getList("items." + path.toLowerCase());
+        if (list != null && !list.isEmpty())
+        {
+            if (list.get(0) instanceof ItemStack)
+            {
+                List<ItemStack> items = (List<ItemStack>) list;
+                return items.toArray(ItemStack[]::new);
+            }
+        }
+        return new ItemStack[]{};
     }
 
     /**
