@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.sd_master92</groupId>
     <artifactId>CustomFile</artifactId>
-    <version>1.9</version>
+    <version>2.0</version>
     <name>CustomFile</name>
     <description>Custom configuration files for Spigot</description>
 
@@ -26,7 +26,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.17-R0.1-SNAPSHOT</version>
+            <version>1.17.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

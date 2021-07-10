@@ -280,7 +280,7 @@ public class CustomFile extends YamlConfiguration
     public boolean setItems(String path, ItemStack[] items)
     {
         items = Arrays.stream(items).filter(Objects::nonNull).toArray(ItemStack[]::new);
-        set("items." + path.toLowerCase(), items);
+        set("items." + path.toLowerCase(), Arrays.stream(items).toList());
         return saveConfig();
     }
 
