@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.sd_master92</groupId>
     <artifactId>CustomFile</artifactId>
-    <version>2.0</version>
+    <version>3.0</version>
     <name>CustomFile</name>
     <description>Custom configuration files for Spigot</description>
 
@@ -28,6 +28,11 @@
             <artifactId>spigot-api</artifactId>
             <version>1.17.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.26</version>
         </dependency>
     </dependencies>
 
