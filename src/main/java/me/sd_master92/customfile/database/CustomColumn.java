@@ -36,11 +36,6 @@ public record CustomColumn(CustomDatabase database,
         return database.execute("ALTER TABLE " + table.getName() + " DROP COLUMN " + name);
     }
 
-    public boolean primary()
-    {
-        return database.execute("ALTER TABLE " + table.getName() + " ADD PRIMARY KEY(" + name + ")");
-    }
-
     public CustomDatabase getDatabase()
     {
         return database;
@@ -66,6 +61,7 @@ public record CustomColumn(CustomDatabase database,
         INT_PRIMARY("int"),
         VARCHAR_PRIMARY("varchar(255) PRIMARY KEY"),
         INT("int"),
+        LONG("bigint"),
         VARCHAR("varchar(255)");
 
         private final String value;

@@ -86,6 +86,7 @@ public class CustomDatabase
             return true;
         } catch (SQLException e)
         {
+            print(statement);
             error(e);
             return false;
         }
@@ -99,6 +100,7 @@ public class CustomDatabase
             return connection.createStatement().executeQuery(statement);
         } catch (SQLException e)
         {
+            print(statement);
             error(e);
             return null;
         }
@@ -107,6 +109,11 @@ public class CustomDatabase
     public CustomTable getTable(String name)
     {
         return new CustomTable(this, name);
+    }
+
+    void print(String text)
+    {
+        System.out.println(PREFIX + text);
     }
 
     void error(Exception e)

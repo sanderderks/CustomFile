@@ -1,5 +1,6 @@
 package me.sd_master92.customfile.database;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public record CustomTable(CustomDatabase database, String name)
@@ -72,6 +73,16 @@ public record CustomTable(CustomDatabase database, String name)
     public boolean updateData(String where, String changes)
     {
         return database.execute("UPDATE " + name + " SET " + changes + " WHERE " + where);
+    }
+
+    public ResultSet getData(String where)
+    {
+        return database.query("SELECT * FROM " + name + " WHERE " + where);
+    }
+
+    public ResultSet getAll()
+    {
+        return database.query("SELECT * FROM " + name);
     }
 
     public boolean deleteData(String where)
