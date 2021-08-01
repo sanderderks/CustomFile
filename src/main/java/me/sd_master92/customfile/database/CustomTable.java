@@ -1,7 +1,6 @@
 package me.sd_master92.customfile.database;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public record CustomTable(CustomDatabase database, String name)
 {
@@ -10,7 +9,7 @@ public record CustomTable(CustomDatabase database, String name)
         try
         {
             return database.getConnection().getMetaData().getTables(null, null, name, null).next();
-        } catch (SQLException e)
+        } catch (Exception e)
         {
             database.error(e);
             return false;

@@ -1,7 +1,5 @@
 package me.sd_master92.customfile.database;
 
-import java.sql.SQLException;
-
 public record CustomColumn(CustomDatabase database,
                            CustomTable table, String name)
 {
@@ -10,7 +8,7 @@ public record CustomColumn(CustomDatabase database,
         try
         {
             return database.getConnection().getMetaData().getColumns(null, null, table.getName(), name).next();
-        } catch (SQLException e)
+        } catch (Exception e)
         {
             database.error(e);
             return false;

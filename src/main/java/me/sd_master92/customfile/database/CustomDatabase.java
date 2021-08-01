@@ -40,9 +40,8 @@ public class CustomDatabase
         {
             connection = DriverManager.getConnection("jdbc:mysql://" + host + "/" + database + "?allowMultiQueries=true&useTimezone=true&serverTimezone=UTC", username, password);
             return isConnected();
-        } catch (SQLException e)
+        } catch (Exception e)
         {
-            error(e);
             return false;
         }
     }
@@ -53,9 +52,8 @@ public class CustomDatabase
         {
             connection.close();
             return true;
-        } catch (SQLException e)
+        } catch (Exception e)
         {
-            error(e);
             return false;
         }
     }
@@ -72,7 +70,6 @@ public class CustomDatabase
             return connection != null && connection.isValid(3);
         } catch (SQLException e)
         {
-            error(e);
             return false;
         }
     }
@@ -84,7 +81,7 @@ public class CustomDatabase
         {
             connection.createStatement().executeUpdate(statement);
             return true;
-        } catch (SQLException e)
+        } catch (Exception e)
         {
             print(statement);
             error(e);
@@ -98,7 +95,7 @@ public class CustomDatabase
         try
         {
             return connection.createStatement().executeQuery(statement);
-        } catch (SQLException e)
+        } catch (Exception e)
         {
             print(statement);
             error(e);
