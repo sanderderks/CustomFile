@@ -2,6 +2,7 @@ package me.sd_master92.customfile;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -282,6 +283,20 @@ public class CustomFile extends YamlConfiguration
         items = Arrays.stream(items).filter(Objects::nonNull).toArray(ItemStack[]::new);
         set("items." + path.toLowerCase(), Arrays.stream(items).toList());
         return saveConfig();
+    }
+
+    /**
+     * save items with air instead of null
+     *
+     * @param path  config path
+     * @param items items to save
+     * @return successful or not
+     */
+    public boolean setItemsWithNull(String path, ItemStack[] items)
+    {
+        items =
+                Arrays.stream(items).map(item -> item == null ? new ItemStack(Material.AIR) : item).toArray(ItemStack[]::new);
+        return setItems(path, items);
     }
 
     /**
