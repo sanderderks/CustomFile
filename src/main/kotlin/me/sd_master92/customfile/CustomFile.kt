@@ -157,7 +157,7 @@ open class CustomFile(folder: File, name: String, plugin: Plugin) : YamlConfigur
      * @param loc  location to save
      * @return successful or not
      */
-    fun setLocation(path: String, loc: Location?): Boolean
+    fun setLocation(path: String, loc: Location): Boolean
     {
         set("locations." + path.lowercase(), loc)
         return saveConfig()

@@ -6,6 +6,12 @@ import java.io.File
 import java.util.*
 import java.util.stream.Collectors
 
+/**
+ * create a new PlayerFile instance
+ *
+ * @param uuid   uuid of this player
+ * @param plugin main plugin class
+ */
 open class PlayerFile(var uuid: String, plugin: Plugin) :
     CustomFile(File(plugin.dataFolder.toString() + File.separator + "players"), "$uuid.yml", plugin)
 {
@@ -18,7 +24,7 @@ open class PlayerFile(var uuid: String, plugin: Plugin) :
      */
     constructor(player: Player, plugin: Plugin) : this(player.uniqueId.toString(), plugin)
     {
-        setName(player.name)
+        name = player.name
     }
 
     /**
@@ -55,7 +61,7 @@ open class PlayerFile(var uuid: String, plugin: Plugin) :
      * @param name player name
      * @return successful or not
      */
-    fun setName(name: String?): Boolean
+    fun setName(name: String): Boolean
     {
         set("name", name)
         return saveConfig()
@@ -94,12 +100,6 @@ open class PlayerFile(var uuid: String, plugin: Plugin) :
         }
     }
 
-    /**
-     * create a new PlayerFile instance
-     *
-     * @param uuid   uuid of this player
-     * @param plugin main plugin class
-     */
     init
     {
         setFirstJoinTime()
