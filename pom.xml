@@ -3,9 +3,11 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>me.sd_master92</groupId>
     <artifactId>CustomFile</artifactId>
     <version>4.0</version>
+
     <name>CustomFile</name>
     <description>Custom configuration files for Spigot</description>
 
@@ -43,7 +45,7 @@
     </dependencies>
 
     <build>
-        <sourceDirectory>src/main/java</sourceDirectory>
+        <sourceDirectory>src/main/kotlin</sourceDirectory>
         <defaultGoal>clean install</defaultGoal>
         <plugins>
             <plugin>
