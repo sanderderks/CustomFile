@@ -6,7 +6,7 @@ import java.io.File
 import java.util.*
 import java.util.stream.Collectors
 
-class PlayerFile(var uuid: String, plugin: Plugin) :
+open class PlayerFile(var uuid: String, plugin: Plugin) :
     CustomFile(File(plugin.dataFolder.toString() + File.separator + "players"), "$uuid.yml", plugin)
 {
     /**
