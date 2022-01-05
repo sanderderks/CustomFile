@@ -12,7 +12,7 @@ import java.util.stream.Collectors
  * @param uuid   uuid of this player
  * @param plugin main plugin class
  */
-open class PlayerFile(var uuid: String, private val plugin: Plugin) :
+open class PlayerFile private constructor(var uuid: String, private val plugin: Plugin) :
     CustomFile(File(plugin.dataFolder.toString() + File.separator + "players"), "$uuid.yml", plugin)
 {
     /**
@@ -22,7 +22,7 @@ open class PlayerFile(var uuid: String, private val plugin: Plugin) :
      * @param player the player
      * @param plugin main plugin class
      */
-    constructor(player: Player, plugin: Plugin) : this(player.uniqueId.toString(), plugin)
+    private constructor(player: Player, plugin: Plugin) : this(player.uniqueId.toString(), plugin)
     {
         name = player.name
     }
@@ -89,6 +89,30 @@ open class PlayerFile(var uuid: String, private val plugin: Plugin) :
                 } else HashMap()
                 initialized = true
             }
+        }
+
+        /**
+         * get an existing player file
+         *
+         * @param uuid   player uuid
+         * @param plugin main plugin class
+         * @return PlayerFile or null
+         */
+        fun get(plugin: Plugin, uuid: String): PlayerFile
+        {
+            return ALL.getOrDefault(uuid, PlayerFile(uuid, plugin))
+        }
+
+        /**
+         * get an existing player file
+         *
+         * @param uuid   player
+         * @param plugin main plugin class
+         * @return PlayerFile or null
+         */
+        fun get(plugin: Plugin, player: Player): PlayerFile
+        {
+            return ALL.getOrDefault(player.uniqueId.toString(), PlayerFile(player, plugin))
         }
 
         /**
