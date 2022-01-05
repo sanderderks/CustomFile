@@ -12,7 +12,7 @@ import java.util.stream.Collectors
  * @param uuid   uuid of this player
  * @param plugin main plugin class
  */
-open class PlayerFile(var uuid: String, plugin: Plugin) :
+open class PlayerFile(var uuid: String, private val plugin: Plugin) :
     CustomFile(File(plugin.dataFolder.toString() + File.separator + "players"), "$uuid.yml", plugin)
 {
     /**
@@ -67,8 +67,30 @@ open class PlayerFile(var uuid: String, plugin: Plugin) :
         return saveConfig()
     }
 
+    private fun init()
+    {
+        ALL[uuid] = this
+    }
+
     companion object
     {
+        private var initialized = false
+        private var ALL: MutableMap<String, PlayerFile> = HashMap()
+
+        fun init(plugin: Plugin)
+        {
+            if (!initialized)
+            {
+                val files = File(plugin.dataFolder.toString() + File.separator + "players").listFiles()
+                ALL = if (files != null)
+                {
+                    Arrays.stream(files).map { file: File -> PlayerFile(file.name.replace(".yml", ""), plugin) }
+                        .collect(Collectors.toList()).associateBy { file -> file.uuid }.toMutableMap()
+                } else HashMap()
+                initialized = true
+            }
+        }
+
         /**
          * get a PlayerFile by player name
          *
@@ -76,11 +98,9 @@ open class PlayerFile(var uuid: String, plugin: Plugin) :
          * @param plugin main plugin class
          * @return PlayerFile or null
          */
-        fun getByName(name: String, plugin: Plugin): PlayerFile?
+        fun getByName(name: String): PlayerFile?
         {
-            return getAll(plugin).stream()
-                .filter { playerFile: PlayerFile -> playerFile.name.equals(name, ignoreCase = true) }
-                .findFirst().orElse(null)
+            return ALL.values.firstOrNull { file -> file.name == name }
         }
 
         /**
@@ -89,19 +109,15 @@ open class PlayerFile(var uuid: String, plugin: Plugin) :
          * @param plugin main plugin class
          * @return empty or filled list of PlayerFiles
          */
-        fun getAll(plugin: Plugin): List<PlayerFile>
+        fun getAll(): Map<String, PlayerFile>
         {
-            val files = File(plugin.dataFolder.toString() + File.separator + "players").listFiles()
-            return if (files != null)
-            {
-                Arrays.stream(files).map { file: File -> PlayerFile(file.name.replace(".yml", ""), plugin) }
-                    .collect(Collectors.toList())
-            } else ArrayList()
+            return ALL
         }
     }
 
     init
     {
         setFirstJoinTime()
+        init()
     }
 }
