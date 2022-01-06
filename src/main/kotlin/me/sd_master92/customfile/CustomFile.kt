@@ -262,18 +262,15 @@ open class CustomFile(folder: File, name: String, plugin: Plugin) : YamlConfigur
      * @return empty or filled string
      */
     @JvmOverloads
-    fun getMessage(path: String, placeholders: Map<String, String>? = null): String
+    fun getMessage(path: String, placeholders: Map<String, String> = HashMap()): String
     {
         var message = getString(path.lowercase())
         if (message != null)
         {
             message = ChatColor.translateAlternateColorCodes('&', message)
-            if (placeholders != null)
+            for (placeholder in placeholders.keys)
             {
-                for (placeholder in placeholders.keys)
-                {
-                    message = message!!.replace(placeholder, placeholders[placeholder]!!)
-                }
+                message = message!!.replace(placeholder, placeholders[placeholder]!!)
             }
             return message!!
         }
@@ -291,7 +288,7 @@ open class CustomFile(folder: File, name: String, plugin: Plugin) : YamlConfigur
     @JvmOverloads
     fun getMessages(
         path: String,
-        placeholders: Map<String, String>? = null,
+        placeholders: Map<String, String> = HashMap(),
         replaceFirst: Boolean = false
     ): List<String>
     {
@@ -299,17 +296,14 @@ open class CustomFile(folder: File, name: String, plugin: Plugin) : YamlConfigur
         for (i in messages.indices)
         {
             var message = ChatColor.translateAlternateColorCodes('&', messages[i])
-            if (placeholders != null)
+            for (placeholder in placeholders.keys)
             {
-                for (placeholder in placeholders.keys)
+                message = if (replaceFirst)
                 {
-                    message = if (replaceFirst)
-                    {
-                        message.replaceFirst(placeholder.toRegex(), placeholders[placeholder]!!)
-                    } else
-                    {
-                        message.replace(placeholder, placeholders[placeholder]!!)
-                    }
+                    message.replaceFirst(placeholder.toRegex(), placeholders[placeholder]!!)
+                } else
+                {
+                    message.replace(placeholder, placeholders[placeholder]!!)
                 }
             }
             messages[i] = message
